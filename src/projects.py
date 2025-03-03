@@ -5,7 +5,7 @@ from config import Config
 class Project:
     def __init__(self, name, path):
         self.name = name
-        self.path = path
+        self.path = os.path.expanduser(path)
 
     def __repr__(self):
         return f"Project(name={self.name}, path={self.path})"
@@ -26,7 +26,7 @@ class Projects:
             with open(self._projects_file, 'r') as file:
                 projects_data = json.load(file)
                 for name, path in projects_data.items():
-                    self._projects[name] = Project(name, path)
+                    self._projects[name] = Project(name, os.path.expanduser(path))
 
     def _save_projects(self):
         projects_data = {name: project.path for name, project in self._projects.items()}
@@ -40,8 +40,8 @@ class Projects:
         
         config = Config()
         default_dir = config.get_notes_dir()
-        project_dir = os.path.join(default_dir, name) if path is None else path
-
+        project_dir = os.path.expanduser(os.path.join(default_dir, name)) if path is None else path
+        
         if os.path.exists(project_dir):
             if os.listdir(project_dir):
                 print(f"\033[93mWarning: Directory '{project_dir}' already exists and is not empty.\033[0m")

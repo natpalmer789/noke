@@ -55,14 +55,14 @@ class Config:
             config_data = json.load(config_file)
             self.default_file_format = config_data.get('default_file_format', self.default_file_format)
             self.editor_command = config_data.get('editor_command', self.editor_command)
-            self.notes_dir = config_data.get('notes_dir', self.notes_dir)
+            self.notes_dir = os.path.expanduser(config_data.get('notes_dir', self.notes_dir))
 
     def save_config(self):
         """Save configuration settings to the JSON file."""
         config_data = {
             'default_file_format': self.default_file_format,
             'editor_command': self.editor_command,
-            'notes_dir': self._notes_dir
+            'notes_dir': self.notes_dir
         }
         os.makedirs(self._config_dir, exist_ok=True)
         with open(self._config_path, 'w') as config_file:

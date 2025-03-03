@@ -7,6 +7,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description='Command line utility for editing notes.')
     parser.add_argument('new', nargs='?', type=str, help='Name of the new file to create')
     parser.add_argument('-v', '--verbosity', action='store_true', help='Enable verbose output')
+    parser.add_argument('-l', '--list', type=str, help='List the contents of the specified project directory')
     parser.add_argument('--add-project', type=str, help='Add a new project directory')
     parser.add_argument('--remove-project', type=str, help='Remove an existing project directory')
     return parser.parse_args()
@@ -38,6 +39,21 @@ def main():
             print(f"Removed project: {args.remove_project}")
         except ValueError as e:
             print(e)
+        return
+    
+    # Handle listing project directory contents
+    if args.list:
+        project = projects.get_project(args.list)
+        if not project:
+            print(f"Project '{args.list}' does not exist.")
+            return
+        print(f"Project: {args.list}")
+        
+        print("Project directory: {}".format(project.path))
+        print("Notes in this project:")
+        print(os.listdir(project.path))
+        for item in os.listdir(project.path):
+            print(f" - {item}")
         return
     
     # If no new file is specified, list projects and exit
